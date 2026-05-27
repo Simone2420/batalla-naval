@@ -1,3 +1,6 @@
+class Utils:
+    pass
+
 def get_column_letter(n: int) -> str:
     """
     Convierte un número entero (1-basado) en su letra de columna correspondiente.
@@ -57,4 +60,4 @@ def parse_coordinate(input_str: str) -> tuple[str, str] | tuple[None, None]:
     if not letters or not numbers:
         return None, None
         
-    return letters, numbers
+    return letters, numbers
