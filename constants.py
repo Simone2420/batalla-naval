@@ -12,10 +12,5 @@ SHIP_SIZES = {
     "crucero": 3,
     "submarino": 3,
     "destructor": 2,
-    "tanque": 1
+    #"tanque": 1
 }
-
-if __name__ == "__main__":
-    print(get_coords(ROWS, "A", "1"))
-    print(get_text_coords(ROWS, COLS, 0, 0))
-

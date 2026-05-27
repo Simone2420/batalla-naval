@@ -26,9 +26,10 @@ def main():
     input("\n¡Todos los barcos han sido colocados! Presiona Enter para comenzar la batalla...")
     
     current_player = 1
+    game_over = False
     
     # 3. Bucle de Turnos
-    while True:
+    while not game_over:
         clear_screen()
         
         # Determinar quién es el jugador activo y su oponente
@@ -57,9 +58,9 @@ def main():
         core.print_board(own_board, hide_ships=False)
         print("\n")
         
-        # Solicitar disparo
-        shot_successful = False
-        while not shot_successful:
+        # Bucle de disparo del jugador activo (repite si acierta)
+        turn_active = True
+        while turn_active:
             coord_input = input(f"{active_name}, ingresa la coordenada de tu disparo (ej: B2): ")
             
             # Parsear coordenada
@@ -85,14 +86,36 @@ def main():
             valid_shot, message = core.handle_shot(opponent_board, row_idx, col_idx)
             if not valid_shot:
                 print(f"Error: {message}")
-            else:
-                print(f"\nResultado del disparo: {message}")
-                shot_successful = True
+                continue  # Pide la coordenada de nuevo sin gastar el turno
                 
-        # Verificar fin del juego
-        if not core.has_ships_remaining(opponent_board):
-            print(f"\n¡FELICIDADES {active_name}! Has hundido todos los barcos enemigos.")
-            print("¡Has ganado la partida!")
+            print(f"\nResultado del disparo: {message}")
+            
+            # Verificar fin del juego tras cada disparo
+            if not core.has_ships_remaining(opponent_board):
+                print(f"\n¡FELICIDADES {active_name}! Has hundido todos los barcos enemigos.")
+                print("¡Has ganado la partida!")
+                game_over = True
+                break
+                
+            # Si acierta, sigue disparando en su mismo turno
+            if message == "¡TOCADO!":
+                print("\n=========================================")
+                print("¡SIGUE DISPARANDO! (Repites turno por acertar)")
+                print("=========================================\n")
+                
+                # Mostrar tableros actualizados para que decida su próximo tiro
+                print("RADAR (Tus disparos en el campo enemigo):")
+                core.print_board(opponent_board, hide_ships=True)
+                print("\n" + "-" * 50 + "\n")
+                
+                print("TU TABLERO (Tus barcos y ataques enemigos):")
+                core.print_board(own_board, hide_ships=False)
+                print("\n")
+            else:
+                # Si falla (Agua...), termina su turno
+                turn_active = False
+                
+        if game_over:
             break
             
         # Esperar confirmación antes de pasar el turno y limpiar pantalla
@@ -100,6 +123,7 @@ def main():
         current_player = next_player
 
     print("\n¡Gracias por jugar a la Batalla Naval!")
+
 
 if __name__ == "__main__":
     main()
